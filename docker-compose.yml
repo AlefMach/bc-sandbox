@@ -1,0 +1,139 @@
+name: bc-sandbox
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: bc-sandbox-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: bc_sandbox
+      POSTGRES_USER: bc_sandbox
+      POSTGRES_PASSWORD: bc_sandbox
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./deployments/postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bc_sandbox -d bc_sandbox"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    networks:
+      - bc-sandbox-net
+
+  kafka:
+    image: apache/kafka:4.1.2
+    container_name: bc-sandbox-kafka
+    restart: unless-stopped
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    environment:
+      KAFKA_NODE_ID: "1"
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_LISTENERS: PLAINTEXT://:9092,PLAINTEXT_HOST://:29092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: "1"
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: "1"
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: "0"
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_NUM_PARTITIONS: "3"
+    volumes:
+      - kafka_data:/tmp/kraft-combined-logs
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 10s
+      retries: 12
+      start_period: 30s
+    networks:
+      - bc-sandbox-net
+
+  kafka-init:
+    image: apache/kafka:4.1.2
+    container_name: bc-sandbox-kafka-init
+    depends_on:
+      kafka:
+        condition: service_healthy
+    command: >
+      sh -ec '
+        for topic in transactions.events settlements.events banks.events audit.events transactions.dlq; do
+          /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists --topic "$${topic}" --partitions 3 --replication-factor 1
+        done
+      '
+    networks:
+      - bc-sandbox-net
+
+  cassandra:
+    image: cassandra:5.0.5
+    container_name: bc-sandbox-cassandra
+    restart: unless-stopped
+    ports:
+      - "9042:9042"
+    environment:
+      CASSANDRA_CLUSTER_NAME: bc-sandbox-cluster
+      CASSANDRA_DC: dc1
+      CASSANDRA_RACK: rack1
+      CASSANDRA_ENDPOINT_SNITCH: GossipingPropertyFileSnitch
+      MAX_HEAP_SIZE: 512M
+      HEAP_NEWSIZE: 128M
+    volumes:
+      - cassandra_data:/var/lib/cassandra
+    healthcheck:
+      test: ["CMD-SHELL", "cqlsh -e 'DESCRIBE KEYSPACES' 127.0.0.1 9042 >/dev/null 2>&1"]
+      interval: 20s
+      timeout: 10s
+      retries: 15
+      start_period: 60s
+    networks:
+      - bc-sandbox-net
+
+  cassandra-init:
+    image: cassandra:5.0.5
+    container_name: bc-sandbox-cassandra-init
+    depends_on:
+      cassandra:
+        condition: service_healthy
+    volumes:
+      - ./deployments/cassandra/init:/init:ro
+    command: >
+      sh -ec '
+        for file in /init/*.cql; do
+          cqlsh cassandra 9042 -f "$${file}"
+        done
+      '
+    networks:
+      - bc-sandbox-net
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: bc-sandbox-kafka-ui
+    restart: unless-stopped
+    profiles:
+      - tools
+    ports:
+      - "8081:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+    depends_on:
+      kafka:
+        condition: service_healthy
+    networks:
+      - bc-sandbox-net
+
+volumes:
+  postgres_data:
+  kafka_data:
+  cassandra_data:
+
+networks:
+  bc-sandbox-net:
+    driver: bridge

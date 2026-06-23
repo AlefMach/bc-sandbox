@@ -1,0 +1,9 @@
+---
+development:
+  url: {{envOr "DATABASE_URL" "postgres://bc_sandbox:bc_sandbox@127.0.0.1:5432/bc_sandbox?sslmode=disable"}}
+
+test:
+  url: {{envOr "TEST_DATABASE_URL" "postgres://bc_sandbox:bc_sandbox@127.0.0.1:5432/bc_sandbox_test?sslmode=disable"}}
+
+production:
+  url: {{envOr "DATABASE_URL" "postgres://bc_sandbox:bc_sandbox@127.0.0.1:5432/bc_sandbox?sslmode=disable"}}
