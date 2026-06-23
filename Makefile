@@ -2,6 +2,7 @@ SHELL := /usr/bin/env bash
 
 APP_NAME ?= bc-sandbox
 BUFFALO ?= buffalo
+BUFFALO_ENV = BUFFALO_PLUGIN_CACHE=off
 DOCKER_COMPOSE ?= docker compose
 GO_ENV ?= development
 POSTGRES_SERVICE ?= postgres
@@ -30,11 +31,11 @@ deps: ## Install Go and JS dependencies
 	yarn install
 
 dev: ## Run the Buffalo development server
-	GO_ENV=$(GO_ENV) $(BUFFALO) dev
+	$(BUFFALO_ENV) GO_ENV=$(GO_ENV) $(BUFFALO) dev
 
 build: ## Build production assets and binary
 	yarn build
-	GO_ENV=production $(BUFFALO) build --static -o bin/$(APP_NAME)
+	$(BUFFALO_ENV) GO_ENV=production $(BUFFALO) build --static -o bin/$(APP_NAME)
 
 format: ## Format Go source files
 	gofmt -w $$(find . -name '*.go' -not -path './vendor/*')
@@ -69,16 +70,16 @@ infra-logs: ## Follow infrastructure logs
 	$(DOCKER_COMPOSE) logs -f
 
 db-create: ## Create configured Buffalo databases
-	$(BUFFALO) pop create -a
+	$(BUFFALO_ENV) $(BUFFALO) pop create -a
 
 db-create-test: ## Create the local test database in Docker Postgres
 	$(DOCKER_COMPOSE) exec -T $(POSTGRES_SERVICE) createdb -U $(POSTGRES_USER) $(TEST_DB_NAME)
 
 db-migrate: ## Run database migrations
-	$(BUFFALO) pop migrate
+	$(BUFFALO_ENV) $(BUFFALO) pop migrate
 
 db-drop: ## Drop configured Buffalo databases
-	$(BUFFALO) pop drop -a
+	$(BUFFALO_ENV) $(BUFFALO) pop drop -a
 
 db-drop-test: ## Drop the local test database in Docker Postgres
 	$(DOCKER_COMPOSE) exec -T $(POSTGRES_SERVICE) dropdb --if-exists -U $(POSTGRES_USER) $(TEST_DB_NAME)
@@ -86,4 +87,4 @@ db-drop-test: ## Drop the local test database in Docker Postgres
 db-reset: db-drop db-create db-migrate ## Recreate and migrate databases
 
 db-seed: ## Run database seed task
-	$(BUFFALO) task db:seed
+	$(BUFFALO_ENV) $(BUFFALO) task db:seed

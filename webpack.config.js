@@ -69,7 +69,19 @@ const configurator = {
             MiniCssExtractPlugin.loader,
             { loader: "css-loader", options: {sourceMap: true}},
             { loader: "postcss-loader", options: {sourceMap: true}},
-            { loader: "sass-loader", options: {sourceMap: true}}
+            {
+              loader: "sass-loader",
+              options: {
+                sourceMap: true,
+                sassOptions: {
+                  quietDeps: true,
+                  silenceDeprecations: [
+                    "legacy-js-api",
+                    "import",
+                  ],
+                },
+              },
+            }
           ]
         },
         { test: /\.tsx?$/, use: "ts-loader", exclude: /node_modules/},
@@ -102,7 +114,7 @@ const configurator = {
       }
     }
 
-    if( env === "development" ){
+    if( env === "development" && process.env.DISABLE_LIVERELOAD !== "1" ){
       config.plugins.push(new LiveReloadPlugin({appendScriptTag: true}))
       return config
     }
