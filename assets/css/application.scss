@@ -275,8 +275,23 @@ a:hover {
   color: #9d2f1d;
 }
 
+.status-pix-active {
+  background: #dff3e6;
+  color: #176336;
+}
+
+.status-pix-inactive {
+  background: #eceff2;
+  color: #52606d;
+}
+
 .compact-table {
   min-width: 680px;
+}
+
+.lookup-grid {
+  align-items: end;
+  grid-template-columns: minmax(220px, 1fr) auto;
 }
 
 @media (max-width: 680px) {

@@ -126,7 +126,7 @@ func (s Service) recordAuditEvent(entityType string, entityID uuid.UUID, eventTy
 		EntityType: entityType,
 		EntityID:   entityID,
 		EventType:  eventType,
-		Payload:    payloadBytes,
+		Payload:    string(payloadBytes),
 		CreatedAt:  s.clock(),
 	}
 	if err := s.repository.CreateAuditEvent(&event); err != nil {

@@ -77,7 +77,9 @@ func App() *buffalo.App {
 		app.GET("/banks/{bank_id}/customers", ListCustomers)
 		app.POST("/banks/{bank_id}/accounts", CreateAccount)
 		app.GET("/accounts/{id}/balance", GetAccountBalance)
-		app.Middleware.Skip(csrf.New, CreateBank, UpdateBankStatus, CreateCustomer, CreateAccount)
+		app.POST("/accounts/{account_id}/pix-keys", CreatePixKey)
+		app.GET("/pix-keys/{key}", GetPixKey)
+		app.Middleware.Skip(csrf.New, CreateBank, UpdateBankStatus, CreateCustomer, CreateAccount, CreatePixKey)
 
 		app.ServeFiles("/", http.FS(public.FS())) // serve files from the public directory
 	})

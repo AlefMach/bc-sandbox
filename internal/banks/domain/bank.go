@@ -1,7 +1,6 @@
 package domain
 
 import (
-	"encoding/json"
 	"fmt"
 	"regexp"
 	"strings"
@@ -51,12 +50,12 @@ type BankWithMetrics struct {
 }
 
 type AuditEvent struct {
-	ID         uuid.UUID       `db:"id" json:"id"`
-	EntityType string          `db:"entity_type" json:"entity_type"`
-	EntityID   uuid.UUID       `db:"entity_id" json:"entity_id"`
-	EventType  string          `db:"event_type" json:"event_type"`
-	Payload    json.RawMessage `db:"payload" json:"payload"`
-	CreatedAt  time.Time       `db:"created_at" json:"created_at"`
+	ID         uuid.UUID `db:"id" json:"id"`
+	EntityType string    `db:"entity_type" json:"entity_type"`
+	EntityID   uuid.UUID `db:"entity_id" json:"entity_id"`
+	EventType  string    `db:"event_type" json:"event_type"`
+	Payload    string    `db:"payload" json:"payload"`
+	CreatedAt  time.Time `db:"created_at" json:"created_at"`
 }
 
 func NewBank(name string, code string, status string, now time.Time) (Bank, map[string]string) {

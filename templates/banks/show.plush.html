@@ -98,6 +98,39 @@
         <button type="submit">Criar conta</button>
       </div>
     </form>
+
+    <form class="table-panel form-panel" method="post" action="/accounts/pending/pix-keys" data-pix-key-form>
+      <div class="panel-title">
+        <h2>Nova chave Pix</h2>
+        <span>Cadastro vinculado a conta ativa</span>
+      </div>
+      <div class="form-grid">
+        <label>
+          <span>Conta</span>
+          <select name="account_id" required>
+            <option value="">Selecione</option>
+            <%= for (account) in accounts { %>
+              <option value="<%= account.ID %>"><%= account.Agency %> / <%= account.Number %> - <%= accountStatusLabel(account.Status) %></option>
+            <% } %>
+          </select>
+        </label>
+        <label>
+          <span>Tipo</span>
+          <select name="key_type" required>
+            <option value="cpf">CPF</option>
+            <option value="cnpj">CNPJ</option>
+            <option value="email">E-mail</option>
+            <option value="phone">Telefone</option>
+            <option value="random">Chave aleatoria</option>
+          </select>
+        </label>
+        <label>
+          <span>Chave</span>
+          <input name="key" type="text" maxlength="254" required>
+        </label>
+        <button type="submit">Registrar chave Pix</button>
+      </div>
+    </form>
   </div>
 
   <div class="table-panel stacked-panel">
@@ -148,6 +181,35 @@
             <td>R$ <%= centsToBRL(account.BalanceCents) %></td>
             <td><span class="status-pill status-account-<%= account.Status %>"><%= accountStatusLabel(account.Status) %></span></td>
             <td><a href="/accounts/<%= account.ID %>/balance">Ver saldo</a></td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table-panel stacked-panel">
+    <div class="panel-title">
+      <h2>Chaves Pix</h2>
+      <span>Consulta pela API GET /pix-keys/{key}</span>
+    </div>
+    <table class="ops-table compact-table">
+      <thead>
+        <tr>
+          <th>Chave</th>
+          <th>Tipo</th>
+          <th>Status</th>
+          <th>Conta</th>
+          <th>Consulta</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= for (pixKey) in pixKeys { %>
+          <tr>
+            <td><%= pixKey.KeyValue %></td>
+            <td><%= pixKeyTypeLabel(pixKey.KeyType) %></td>
+            <td><span class="status-pill status-pix-<%= pixKey.Status %>"><%= pixKeyStatusLabel(pixKey.Status) %></span></td>
+            <td><%= pixKey.AccountID %></td>
+            <td><a href="/pix-keys/<%= pixKey.KeyValue %>">Consultar</a></td>
           </tr>
         <% } %>
       </tbody>

@@ -13,7 +13,7 @@ func (as *ActionSuite) Test_CreateAndListBanks() {
 		"code": "341",
 	})
 
-	as.Equal(http.StatusCreated, createResponse.Code)
+	as.Equalf(http.StatusCreated, createResponse.Code, createResponse.Body.String())
 
 	created := domain.Bank{}
 	as.NoError(json.Unmarshal(createResponse.Body.Bytes(), &created))

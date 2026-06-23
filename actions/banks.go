@@ -8,6 +8,7 @@ import (
 
 	bankpostgres "bc_sandbox/internal/banks/adapters/postgres"
 	"bc_sandbox/internal/banks/application"
+	pixdomain "bc_sandbox/internal/pix/domain"
 
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/pop/v6"
@@ -106,9 +107,20 @@ func BankDashboard(c buffalo.Context) error {
 	if err != nil {
 		return renderAccountError(c, err, "account_list_failed", "nao foi possivel listar contas")
 	}
+	pixKeys := pixdomain.PixKeys{}
+	for _, account := range accounts {
+		accountPixKeys, err := pixService(c).ListAccountPixKeys(account.ID.String())
+		if err != nil {
+			return renderPixError(c, err, "pix_key_list_failed", "nao foi possivel listar chaves Pix")
+		}
+		for _, pixKey := range accountPixKeys {
+			pixKeys = append(pixKeys, pixKey)
+		}
+	}
 	c.Set("bank", bank)
 	c.Set("customers", customers)
 	c.Set("accounts", accounts)
+	c.Set("pixKeys", pixKeys)
 	return c.Render(http.StatusOK, r.HTML("banks/show.plush.html"))
 }
 
