@@ -27,10 +27,11 @@ func init() {
 
 		// Add template helpers here:
 		Helpers: render.Helpers{
-			"bankStatusLabel":    domain.StatusLabel,
-			"accountStatusLabel": accountdomain.AccountStatusLabel,
-			"pixKeyTypeLabel":    pixdomain.KeyTypeLabel,
-			"pixKeyStatusLabel":  pixdomain.KeyStatusLabel,
+			"bankStatusLabel":           domain.StatusLabel,
+			"accountStatusLabel":        accountdomain.AccountStatusLabel,
+			"pixKeyTypeLabel":           pixdomain.KeyTypeLabel,
+			"pixKeyStatusLabel":         pixdomain.KeyStatusLabel,
+			"pixTransactionStatusLabel": pixdomain.StatusLabel,
 			"centsToBRL": func(cents int64) string {
 				return fmt.Sprintf("%d,%02d", cents/100, cents%100)
 			},

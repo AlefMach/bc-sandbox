@@ -4,6 +4,8 @@ import (
 	"errors"
 
 	accountdomain "bc_sandbox/internal/accounts/domain"
+	bankapp "bc_sandbox/internal/banks/application"
+	bankdomain "bc_sandbox/internal/banks/domain"
 	"bc_sandbox/internal/pix/application"
 	"bc_sandbox/internal/pix/domain"
 
@@ -25,6 +27,14 @@ func (r Repository) FindAccountByID(id uuid.UUID) (accountdomain.Account, error)
 		return accountdomain.Account{}, application.ErrAccountNotFound
 	}
 	return account, nil
+}
+
+func (r Repository) FindBankByID(id uuid.UUID) (bankdomain.Bank, error) {
+	bank := bankdomain.Bank{}
+	if err := r.tx.Find(&bank, id); err != nil {
+		return bankdomain.Bank{}, bankapp.ErrBankNotFound
+	}
+	return bank, nil
 }
 
 func (r Repository) FindPixKey(key string) (domain.PixKey, error) {
@@ -105,8 +115,51 @@ func (r Repository) ListPixKeysByAccount(accountID uuid.UUID) ([]domain.PixKey, 
 	return keys, nil
 }
 
+func (r Repository) CreateTransaction(transaction *domain.Transaction) error {
+	return r.tx.Create(transaction)
+}
+
+func (r Repository) UpdateTransaction(transaction *domain.Transaction) error {
+	return r.tx.Update(transaction)
+}
+
+func (r Repository) FindTransactionByID(id uuid.UUID) (domain.Transaction, error) {
+	transaction := domain.Transaction{}
+	if err := r.tx.Find(&transaction, id); err != nil {
+		return domain.Transaction{}, application.ErrTransactionNotFound
+	}
+	return transaction, nil
+}
+
+func (r Repository) ListTransactionsByBank(bankID uuid.UUID) ([]domain.Transaction, error) {
+	transactions := domain.Transactions{}
+	if err := r.tx.Where("payer_bank_id = ? OR receiver_bank_id = ?", bankID, bankID).Order("created_at desc").All(&transactions); err != nil {
+		return nil, err
+	}
+	return transactions, nil
+}
+
+func (r Repository) CreateTransactionEvent(event *domain.TransactionEvent) error {
+	return r.tx.Create(event)
+}
+
+func (r Repository) ListTransactionEvents(transactionID uuid.UUID) ([]domain.TransactionEvent, error) {
+	events := domain.TransactionEvents{}
+	if err := r.tx.Where("transaction_id = ?", transactionID).Order("created_at asc").All(&events); err != nil {
+		return nil, err
+	}
+	return events, nil
+}
+
+func (r Repository) UpdateAccountBalance(account *accountdomain.Account) error {
+	return r.tx.Update(account)
+}
+
 func IsNotFound(err error) bool {
 	return errors.Is(err, application.ErrPixKeyNotFound) ||
 		errors.Is(err, application.ErrAccountNotFound) ||
-		errors.Is(err, application.ErrInvalidAccountIdentifier)
+		errors.Is(err, application.ErrTransactionNotFound) ||
+		errors.Is(err, application.ErrInvalidTransactionIdentifier) ||
+		errors.Is(err, application.ErrInvalidAccountIdentifier) ||
+		errors.Is(err, bankapp.ErrBankNotFound)
 }

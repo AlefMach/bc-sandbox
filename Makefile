@@ -21,7 +21,7 @@ POSTGRES_DB ?= bc_sandbox
 
 .PHONY: help deps dev build format test test-actions test-models clean \
 	infra-up infra-up-tools infra-down infra-restart infra-ps infra-logs \
-	db-create db-create-test db-migrate db-drop db-drop-test db-reset db-seed
+	db-create db-create-test db-migrate db-migrate-test db-drop db-drop-test db-reset db-seed
 
 help: ## Show available commands
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage: make <target>\n\nTargets:\n"} /^[a-zA-Z0-9_-]+:.*##/ {printf "  %-18s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -40,10 +40,10 @@ build: ## Build production assets and binary
 format: ## Format Go source files
 	gofmt -w $$(find . -name '*.go' -not -path './vendor/*')
 
-test: ## Run all Go tests
+test: db-migrate-test ## Run all Go tests
 	GO_ENV=test go test ./...
 
-test-actions: ## Run action tests only
+test-actions: db-migrate-test ## Run action tests only
 	GO_ENV=test go test ./actions
 
 test-models: ## Run model tests only
@@ -77,6 +77,9 @@ db-create-test: ## Create the local test database in Docker Postgres
 
 db-migrate: ## Run database migrations
 	$(BUFFALO_ENV) $(BUFFALO) pop migrate
+
+db-migrate-test: ## Run database migrations on the test database
+	$(BUFFALO_ENV) $(BUFFALO) pop migrate -e test
 
 db-drop: ## Drop configured Buffalo databases
 	$(BUFFALO_ENV) $(BUFFALO) pop drop -a

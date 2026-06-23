@@ -130,6 +130,7 @@ a:hover {
   display: block;
   font-size: 1.7rem;
   line-height: 1.1;
+  overflow-wrap: anywhere;
 }
 
 .table-panel {
@@ -285,6 +286,30 @@ a:hover {
   color: #52606d;
 }
 
+.status-tx-created,
+.status-tx-payer_account_validated,
+.status-tx-pix_key_consulted,
+.status-tx-receiver_account_identified,
+.status-tx-balance_validated,
+.status-tx-funds_reserved,
+.status-tx-sent_to_central_bank,
+.status-tx-settled,
+.status-tx-receiver_bank_notified,
+.status-tx-receiver_account_credited {
+  background: #e4edf8;
+  color: #164d83;
+}
+
+.status-tx-completed {
+  background: #dff3e6;
+  color: #176336;
+}
+
+.status-tx-failed {
+  background: #fde4df;
+  color: #9d2f1d;
+}
+
 .compact-table {
   min-width: 680px;
 }
@@ -292,6 +317,41 @@ a:hover {
 .lookup-grid {
   align-items: end;
   grid-template-columns: minmax(220px, 1fr) auto;
+}
+
+.timeline-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.timeline-list li {
+  border-bottom: 1px solid #edf1f4;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 86px minmax(0, 1fr);
+  padding: 16px 18px;
+}
+
+.timeline-list time {
+  color: #64717d;
+  font-weight: 800;
+}
+
+.timeline-list strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.timeline-list p {
+  margin: 0 0 6px;
+}
+
+.timeline-list span {
+  color: #64717d;
+  display: block;
+  font-size: 0.86rem;
+  overflow-wrap: anywhere;
 }
 
 @media (max-width: 680px) {
@@ -314,5 +374,10 @@ a:hover {
   .page-heading,
   .bank-profile {
     display: block;
+  }
+
+  .lookup-grid,
+  .timeline-list li {
+    grid-template-columns: 1fr;
   }
 }

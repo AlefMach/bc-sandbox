@@ -37,11 +37,11 @@ type Bank struct {
 type Banks []Bank
 
 type Metrics struct {
-	Accounts              int64 `json:"accounts"`
-	TotalTransactedCents  int64 `json:"total_transacted_cents"`
-	PendingTransactions   int64 `json:"pending_transactions"`
-	CompletedTransactions int64 `json:"completed_transactions"`
-	FailedTransactions    int64 `json:"failed_transactions"`
+	Accounts              int64 `db:"accounts" json:"accounts"`
+	TotalTransactedCents  int64 `db:"total_transacted_cents" json:"total_transacted_cents"`
+	PendingTransactions   int64 `db:"pending_transactions" json:"pending_transactions"`
+	CompletedTransactions int64 `db:"completed_transactions" json:"completed_transactions"`
+	FailedTransactions    int64 `db:"failed_transactions" json:"failed_transactions"`
 }
 
 type BankWithMetrics struct {

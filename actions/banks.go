@@ -117,10 +117,15 @@ func BankDashboard(c buffalo.Context) error {
 			pixKeys = append(pixKeys, pixKey)
 		}
 	}
+	pixTransactions, err := pixService(c).ListBankTransactions(c.Param("id"))
+	if err != nil {
+		return renderPixError(c, err, "pix_transaction_list_failed", "nao foi possivel listar transacoes Pix")
+	}
 	c.Set("bank", bank)
 	c.Set("customers", customers)
 	c.Set("accounts", accounts)
 	c.Set("pixKeys", pixKeys)
+	c.Set("pixTransactions", pixTransactions)
 	return c.Render(http.StatusOK, r.HTML("banks/show.plush.html"))
 }
 

@@ -77,15 +77,15 @@ func (r Repository) metricsForBank(bankID uuid.UUID) (domain.Metrics, error) {
 		}
 	}
 
-	if r.tableExists("transactions") {
+	if r.tableExists("pix_transactions") {
 		err := r.tx.RawQuery(`
 			SELECT
 				COALESCE(SUM(amount_cents), 0) AS total_transacted_cents,
-				COUNT(*) FILTER (WHERE status = 'pending') AS pending_transactions,
+				COUNT(*) FILTER (WHERE status NOT IN ('completed', 'failed')) AS pending_transactions,
 				COUNT(*) FILTER (WHERE status = 'completed') AS completed_transactions,
 				COUNT(*) FILTER (WHERE status = 'failed') AS failed_transactions
-			FROM transactions
-			WHERE origin_bank_id = ? OR destination_bank_id = ?
+			FROM pix_transactions
+			WHERE payer_bank_id = ? OR receiver_bank_id = ?
 		`, bankID, bankID).First(&metrics)
 		if err != nil {
 			return metrics, err

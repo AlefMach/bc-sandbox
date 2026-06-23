@@ -1,0 +1,50 @@
+<section class="page-shell">
+  <nav class="top-nav">
+    <a href="<%= rootPath() %>">BC Sandbox</a>
+    <a href="/central-bank">Banco Central</a>
+    <a href="/banks/<%= transaction.PayerBankID %>/dashboard">Banco origem</a>
+  </nav>
+
+  <div class="bank-profile">
+    <div>
+      <p>Transacao Pix</p>
+      <h1><%= transaction.ID %></h1>
+      <span>Valor R$ <%= centsToBRL(transaction.AmountCents) %></span>
+    </div>
+    <span class="status-pill status-tx-<%= transaction.Status %>"><%= pixTransactionStatusLabel(transaction.Status) %></span>
+  </div>
+
+  <div class="metric-grid">
+    <div class="metric-tile">
+      <span>Banco origem</span>
+      <strong><%= transaction.PayerBankID %></strong>
+    </div>
+    <div class="metric-tile">
+      <span>Banco recebedor</span>
+      <strong><%= transaction.ReceiverBankID %></strong>
+    </div>
+    <div class="metric-tile">
+      <span>Chave Pix</span>
+      <strong><%= transaction.PixKey %></strong>
+    </div>
+  </div>
+
+  <div class="table-panel stacked-panel">
+    <div class="panel-title">
+      <h2>Timeline</h2>
+      <span>Eventos em ordem cronologica</span>
+    </div>
+    <ol class="timeline-list">
+      <%= for (item) in timeline { %>
+        <li>
+          <time><%= item.Time.Format("15:04:05") %></time>
+          <div>
+            <strong><%= pixTransactionStatusLabel(item.Status) %></strong>
+            <p><%= item.Description %></p>
+            <span><%= item.Service %> · <%= item.BankID %> · <%= item.Metadata %></span>
+          </div>
+        </li>
+      <% } %>
+    </ol>
+  </div>
+</section>

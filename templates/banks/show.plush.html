@@ -131,6 +131,33 @@
         <button type="submit">Registrar chave Pix</button>
       </div>
     </form>
+
+    <form class="table-panel form-panel" method="post" action="/pix-transactions">
+      <div class="panel-title">
+        <h2>Novo Pix</h2>
+        <span>Processamento sincrono em estagios</span>
+      </div>
+      <div class="form-grid">
+        <label>
+          <span>Conta pagadora</span>
+          <select name="payer_account_id" required>
+            <option value="">Selecione</option>
+            <%= for (account) in accounts { %>
+              <option value="<%= account.ID %>"><%= account.Agency %> / <%= account.Number %> - R$ <%= centsToBRL(account.BalanceCents) %></option>
+            <% } %>
+          </select>
+        </label>
+        <label>
+          <span>Chave Pix recebedora</span>
+          <input name="pix_key" type="text" maxlength="254" required>
+        </label>
+        <label>
+          <span>Valor</span>
+          <input name="amount_reais" type="text" inputmode="decimal" placeholder="0,00" required>
+        </label>
+        <button type="submit">Enviar Pix</button>
+      </div>
+    </form>
   </div>
 
   <div class="table-panel stacked-panel">
@@ -210,6 +237,37 @@
             <td><span class="status-pill status-pix-<%= pixKey.Status %>"><%= pixKeyStatusLabel(pixKey.Status) %></span></td>
             <td><%= pixKey.AccountID %></td>
             <td><a href="/pix-keys/<%= pixKey.KeyValue %>">Consultar</a></td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table-panel stacked-panel">
+    <div class="panel-title">
+      <h2>Transacoes Pix</h2>
+      <span>Timeline pela API GET /pix-transactions/{id}/timeline</span>
+    </div>
+    <table class="ops-table compact-table">
+      <thead>
+        <tr>
+          <th>Transacao</th>
+          <th>Valor</th>
+          <th>Status</th>
+          <th>Conta pagadora</th>
+          <th>Conta recebedora</th>
+          <th>Timeline</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= for (transaction) in pixTransactions { %>
+          <tr>
+            <td><%= transaction.ID %></td>
+            <td>R$ <%= centsToBRL(transaction.AmountCents) %></td>
+            <td><span class="status-pill status-tx-<%= transaction.Status %>"><%= pixTransactionStatusLabel(transaction.Status) %></span></td>
+            <td><%= transaction.PayerAccountID %></td>
+            <td><%= transaction.ReceiverAccountID %></td>
+            <td><a href="/pix-transactions/<%= transaction.ID %>">Ver eventos</a></td>
           </tr>
         <% } %>
       </tbody>
