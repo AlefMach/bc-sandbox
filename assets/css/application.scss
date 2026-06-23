@@ -1,4 +1,233 @@
 @import "~bootstrap/scss/bootstrap.scss";
 @import "~@fortawesome/fontawesome-free/css/all.min.css";
 
-@import "buffalo";
+body {
+  background: #f4f6f8;
+  color: #17212b;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  margin: 0;
+}
+
+a {
+  color: #0b5cad;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #063f78;
+  text-decoration: underline;
+}
+
+.app-container {
+  min-height: 100vh;
+}
+
+.home-shell,
+.page-shell {
+  margin: 0 auto;
+  max-width: 1180px;
+  padding: 28px 20px 48px;
+}
+
+.home-hero {
+  background: linear-gradient(135deg, #ffffff 0%, #e8f1f8 45%, #dfe8de 100%);
+  border: 1px solid #d8e0e6;
+  border-radius: 8px;
+  margin-top: 56px;
+  padding: 48px;
+}
+
+.home-hero p,
+.page-heading p,
+.bank-profile p {
+  color: #64717d;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  margin: 0 0 8px;
+  text-transform: uppercase;
+}
+
+.home-hero h1,
+.page-heading h1,
+.bank-profile h1 {
+  font-size: 2.4rem;
+  line-height: 1.12;
+  margin: 0;
+  max-width: 760px;
+}
+
+.home-actions,
+.top-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.home-actions {
+  margin-top: 28px;
+}
+
+.home-actions a,
+.top-nav a {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #cfd8df;
+  border-radius: 6px;
+  color: #17212b;
+  display: inline-flex;
+  font-weight: 700;
+  min-height: 40px;
+  padding: 8px 14px;
+}
+
+.top-nav {
+  margin-bottom: 34px;
+}
+
+.page-heading,
+.bank-profile {
+  align-items: flex-start;
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.compact-heading {
+  margin-bottom: 18px;
+}
+
+.bank-profile span {
+  color: #64717d;
+  display: inline-block;
+  margin-top: 8px;
+}
+
+.metric-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  margin-bottom: 22px;
+}
+
+.metric-tile {
+  background: #ffffff;
+  border: 1px solid #d8e0e6;
+  border-radius: 8px;
+  padding: 18px;
+}
+
+.metric-tile span {
+  color: #64717d;
+  display: block;
+  font-size: 0.88rem;
+  margin-bottom: 6px;
+}
+
+.metric-tile strong {
+  color: #17212b;
+  display: block;
+  font-size: 1.7rem;
+  line-height: 1.1;
+}
+
+.table-panel {
+  background: #ffffff;
+  border: 1px solid #d8e0e6;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+.panel-title {
+  align-items: baseline;
+  border-bottom: 1px solid #e3e8ed;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: space-between;
+  padding: 18px;
+}
+
+.panel-title h2 {
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+.panel-title span {
+  color: #64717d;
+  font-size: 0.9rem;
+}
+
+.ops-table {
+  border-collapse: collapse;
+  min-width: 840px;
+  width: 100%;
+}
+
+.ops-table th,
+.ops-table td {
+  border-bottom: 1px solid #edf1f4;
+  padding: 13px 18px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.ops-table th {
+  color: #64717d;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+}
+
+.status-pill {
+  border-radius: 999px;
+  display: inline-flex;
+  font-size: 0.82rem;
+  font-weight: 800;
+  line-height: 1;
+  padding: 7px 10px;
+  white-space: nowrap;
+}
+
+.status-active {
+  background: #dff3e6;
+  color: #176336;
+}
+
+.status-inactive {
+  background: #eceff2;
+  color: #52606d;
+}
+
+.status-offline {
+  background: #fde4df;
+  color: #9d2f1d;
+}
+
+.status-maintenance {
+  background: #fff1cf;
+  color: #7a5400;
+}
+
+@media (max-width: 680px) {
+  .home-shell,
+  .page-shell {
+    padding: 18px 12px 34px;
+  }
+
+  .home-hero {
+    margin-top: 20px;
+    padding: 28px 20px;
+  }
+
+  .home-hero h1,
+  .page-heading h1,
+  .bank-profile h1 {
+    font-size: 1.8rem;
+  }
+
+  .page-heading,
+  .bank-profile {
+    display: block;
+  }
+}

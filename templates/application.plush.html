@@ -3,7 +3,7 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8">
-    <title>Buffalo - Bc Sandbox</title>
+    <title>BC Sandbox</title>
     <%= stylesheetTag("application.css") %>
     <meta name="csrf-param" content="authenticity_token" />
     <meta name="csrf-token" content="<%= authenticity_token %>" />
@@ -11,7 +11,7 @@
   </head>
   <body>
 
-    <div class="container">
+    <div class="app-container">
       <%= partial("flash.html") %>
       <%= yield %>
     </div>

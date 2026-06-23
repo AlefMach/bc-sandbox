@@ -66,6 +66,14 @@ func App() *buffalo.App {
 		app.Use(translations())
 
 		app.GET("/", HomeHandler)
+		app.GET("/central-bank", CentralBankDashboard)
+		app.GET("/admin/banks", AdminBanksDashboard)
+		app.GET("/banks/{id}/dashboard", BankDashboard)
+		app.POST("/banks", CreateBank)
+		app.GET("/banks", ListBanks)
+		app.GET("/banks/{id}", ShowBank)
+		app.PATCH("/banks/{id}/status", UpdateBankStatus)
+		app.Middleware.Skip(csrf.New, CreateBank, UpdateBankStatus)
 
 		app.ServeFiles("/", http.FS(public.FS())) // serve files from the public directory
 	})

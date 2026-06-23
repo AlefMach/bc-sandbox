@@ -1,0 +1,46 @@
+<section class="page-shell">
+  <nav class="top-nav">
+    <a href="<%= rootPath() %>">BC Sandbox</a>
+    <a href="/central-bank">Banco Central</a>
+  </nav>
+
+  <div class="page-heading compact-heading">
+    <p>Painel administrador</p>
+    <h1>Bancos cadastrados</h1>
+  </div>
+
+  <div class="table-panel">
+    <div class="panel-title">
+      <h2>Operacao dos participantes</h2>
+      <span>Use a API PATCH /banks/{id}/status para alterar status</span>
+    </div>
+    <table class="ops-table">
+      <thead>
+        <tr>
+          <th>Banco</th>
+          <th>Codigo</th>
+          <th>Status</th>
+          <th>Contas</th>
+          <th>Volume total</th>
+          <th>Pendentes</th>
+          <th>Concluidas</th>
+          <th>Falhas</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= for (bank) in banks { %>
+          <tr>
+            <td><a href="/banks/<%= bank.ID %>/dashboard"><%= bank.Name %></a></td>
+            <td><%= bank.Code %></td>
+            <td><span class="status-pill status-<%= bank.Status %>"><%= bankStatusLabel(bank.Status) %></span></td>
+            <td><%= bank.Metrics.Accounts %></td>
+            <td>R$ <%= centsToBRL(bank.Metrics.TotalTransactedCents) %></td>
+            <td><%= bank.Metrics.PendingTransactions %></td>
+            <td><%= bank.Metrics.CompletedTransactions %></td>
+            <td><%= bank.Metrics.FailedTransactions %></td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</section>

@@ -1,6 +1,9 @@
 package actions
 
 import (
+	"fmt"
+
+	"bc_sandbox/internal/banks/domain"
 	"bc_sandbox/public"
 	"bc_sandbox/templates"
 
@@ -22,6 +25,24 @@ func init() {
 
 		// Add template helpers here:
 		Helpers: render.Helpers{
+			"bankStatusLabel": domain.StatusLabel,
+			"centsToBRL": func(cents int64) string {
+				return fmt.Sprintf("%d,%02d", cents/100, cents%100)
+			},
+			"sumPending": func(banks []domain.BankWithMetrics) int64 {
+				var total int64
+				for _, bank := range banks {
+					total += bank.Metrics.PendingTransactions
+				}
+				return total
+			},
+			"sumCompleted": func(banks []domain.BankWithMetrics) int64 {
+				var total int64
+				for _, bank := range banks {
+					total += bank.Metrics.CompletedTransactions
+				}
+				return total
+			},
 			// for non-bootstrap form helpers uncomment the lines
 			// below and import "github.com/gobuffalo/helpers/forms"
 			// forms.FormKey:     forms.Form,

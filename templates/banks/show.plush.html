@@ -1,0 +1,39 @@
+<section class="page-shell">
+  <nav class="top-nav">
+    <a href="<%= rootPath() %>">BC Sandbox</a>
+    <a href="/admin/banks">Administrador</a>
+    <a href="/central-bank">Banco Central</a>
+  </nav>
+
+  <div class="bank-profile">
+    <div>
+      <p>Banco participante</p>
+      <h1><%= bank.Name %></h1>
+      <span>Codigo bancario <%= bank.Code %></span>
+    </div>
+    <span class="status-pill status-<%= bank.Status %>"><%= bankStatusLabel(bank.Status) %></span>
+  </div>
+
+  <div class="metric-grid">
+    <div class="metric-tile">
+      <span>Contas</span>
+      <strong><%= bank.Metrics.Accounts %></strong>
+    </div>
+    <div class="metric-tile">
+      <span>Volume transacionado</span>
+      <strong>R$ <%= centsToBRL(bank.Metrics.TotalTransactedCents) %></strong>
+    </div>
+    <div class="metric-tile">
+      <span>Pendentes</span>
+      <strong><%= bank.Metrics.PendingTransactions %></strong>
+    </div>
+    <div class="metric-tile">
+      <span>Concluidas</span>
+      <strong><%= bank.Metrics.CompletedTransactions %></strong>
+    </div>
+    <div class="metric-tile">
+      <span>Falhas</span>
+      <strong><%= bank.Metrics.FailedTransactions %></strong>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,61 @@
+<section class="page-shell">
+  <nav class="top-nav">
+    <a href="<%= rootPath() %>">BC Sandbox</a>
+    <a href="/admin/banks">Administrador</a>
+  </nav>
+
+  <div class="page-heading">
+    <p>Banco Central</p>
+    <h1>Supervisao de bancos participantes</h1>
+  </div>
+
+  <div class="metric-grid">
+    <div class="metric-tile">
+      <span>Bancos cadastrados</span>
+      <strong><%= len(banks) %></strong>
+    </div>
+    <div class="metric-tile">
+      <span>Autoridade de liquidacao</span>
+      <strong>BC</strong>
+    </div>
+    <div class="metric-tile">
+      <span>Transacoes pendentes</span>
+      <strong><%= sumPending(banks) %></strong>
+    </div>
+    <div class="metric-tile">
+      <span>Transacoes concluidas</span>
+      <strong><%= sumCompleted(banks) %></strong>
+    </div>
+  </div>
+
+  <div class="table-panel">
+    <div class="panel-title">
+      <h2>Bancos monitorados</h2>
+      <span>Status operacional e volume transacionado</span>
+    </div>
+    <table class="ops-table">
+      <thead>
+        <tr>
+          <th>Banco</th>
+          <th>Codigo</th>
+          <th>Status</th>
+          <th>Contas</th>
+          <th>Volume</th>
+          <th>Pendentes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= for (bank) in banks { %>
+          <tr>
+            <td><a href="/banks/<%= bank.ID %>/dashboard"><%= bank.Name %></a></td>
+            <td><%= bank.Code %></td>
+            <td><span class="status-pill status-<%= bank.Status %>"><%= bankStatusLabel(bank.Status) %></span></td>
+            <td><%= bank.Metrics.Accounts %></td>
+            <td>R$ <%= centsToBRL(bank.Metrics.TotalTransactedCents) %></td>
+            <td><%= bank.Metrics.PendingTransactions %></td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</section>
