@@ -98,7 +98,17 @@ func BankDashboard(c buffalo.Context) error {
 	if err != nil {
 		return renderBankError(c, err, "bank_not_found", "banco nao encontrado")
 	}
+	customers, err := accountService(c).ListCustomers(c.Param("id"))
+	if err != nil {
+		return renderAccountError(c, err, "customer_list_failed", "nao foi possivel listar clientes")
+	}
+	accounts, err := accountService(c).ListAccounts(c.Param("id"))
+	if err != nil {
+		return renderAccountError(c, err, "account_list_failed", "nao foi possivel listar contas")
+	}
 	c.Set("bank", bank)
+	c.Set("customers", customers)
+	c.Set("accounts", accounts)
 	return c.Render(http.StatusOK, r.HTML("banks/show.plush.html"))
 }
 

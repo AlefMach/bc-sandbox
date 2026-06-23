@@ -3,6 +3,7 @@ package actions
 import (
 	"fmt"
 
+	accountdomain "bc_sandbox/internal/accounts/domain"
 	"bc_sandbox/internal/banks/domain"
 	"bc_sandbox/public"
 	"bc_sandbox/templates"
@@ -25,7 +26,8 @@ func init() {
 
 		// Add template helpers here:
 		Helpers: render.Helpers{
-			"bankStatusLabel": domain.StatusLabel,
+			"bankStatusLabel":    domain.StatusLabel,
+			"accountStatusLabel": accountdomain.AccountStatusLabel,
 			"centsToBRL": func(cents int64) string {
 				return fmt.Sprintf("%d,%02d", cents/100, cents%100)
 			},

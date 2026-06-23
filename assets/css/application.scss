@@ -139,6 +139,57 @@ a:hover {
   overflow-x: auto;
 }
 
+.management-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  margin-bottom: 22px;
+}
+
+.stacked-panel {
+  margin-top: 18px;
+}
+
+.form-panel {
+  overflow: visible;
+}
+
+.form-grid {
+  display: grid;
+  gap: 12px;
+  padding: 18px;
+}
+
+.form-grid label {
+  display: grid;
+  gap: 6px;
+}
+
+.form-grid label span {
+  color: #64717d;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.form-grid input,
+.form-grid select {
+  border: 1px solid #cfd8df;
+  border-radius: 6px;
+  min-height: 40px;
+  padding: 8px 10px;
+  width: 100%;
+}
+
+.form-grid button {
+  background: #0b5cad;
+  border: 1px solid #0b5cad;
+  border-radius: 6px;
+  color: #ffffff;
+  font-weight: 800;
+  min-height: 42px;
+  padding: 9px 14px;
+}
+
 .panel-title {
   align-items: baseline;
   border-bottom: 1px solid #e3e8ed;
@@ -207,6 +258,25 @@ a:hover {
 .status-maintenance {
   background: #fff1cf;
   color: #7a5400;
+}
+
+.status-account-active {
+  background: #dff3e6;
+  color: #176336;
+}
+
+.status-account-blocked {
+  background: #fff1cf;
+  color: #7a5400;
+}
+
+.status-account-closed {
+  background: #fde4df;
+  color: #9d2f1d;
+}
+
+.compact-table {
+  min-width: 680px;
 }
 
 @media (max-width: 680px) {

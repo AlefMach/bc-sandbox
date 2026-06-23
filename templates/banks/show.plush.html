@@ -36,4 +36,121 @@
       <strong><%= bank.Metrics.FailedTransactions %></strong>
     </div>
   </div>
+
+  <div class="management-grid">
+    <form class="table-panel form-panel" method="post" action="/banks/<%= bank.ID %>/customers">
+      <div class="panel-title">
+        <h2>Novo cliente</h2>
+        <span>Cliente vinculado a este banco</span>
+      </div>
+      <div class="form-grid">
+        <label>
+          <span>Nome</span>
+          <input name="name" type="text" maxlength="160" required>
+        </label>
+        <label>
+          <span>Documento</span>
+          <input name="document" type="text" inputmode="numeric" maxlength="18" required>
+        </label>
+        <label>
+          <span>E-mail</span>
+          <input name="email" type="email" maxlength="254" required>
+        </label>
+        <button type="submit">Cadastrar cliente</button>
+      </div>
+    </form>
+
+    <form class="table-panel form-panel" method="post" action="/banks/<%= bank.ID %>/accounts">
+      <div class="panel-title">
+        <h2>Nova conta</h2>
+        <span>Conta vinculada a cliente existente</span>
+      </div>
+      <div class="form-grid">
+        <label>
+          <span>Cliente</span>
+          <select name="customer_id" required>
+            <option value="">Selecione</option>
+            <%= for (customer) in customers { %>
+              <option value="<%= customer.ID %>"><%= customer.Name %> - <%= customer.Document %></option>
+            <% } %>
+          </select>
+        </label>
+        <label>
+          <span>Agencia</span>
+          <input name="agency" type="text" inputmode="numeric" maxlength="8" required>
+        </label>
+        <label>
+          <span>Conta</span>
+          <input name="number" type="text" inputmode="numeric" maxlength="20" required>
+        </label>
+        <label>
+          <span>Saldo inicial</span>
+          <input name="balance_reais" type="text" inputmode="decimal" placeholder="0,00">
+        </label>
+        <label>
+          <span>Status</span>
+          <select name="status">
+            <option value="active">Ativa</option>
+            <option value="blocked">Bloqueada</option>
+            <option value="closed">Encerrada</option>
+          </select>
+        </label>
+        <button type="submit">Criar conta</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="table-panel stacked-panel">
+    <div class="panel-title">
+      <h2>Clientes</h2>
+      <span><%= len(customers) %> cadastrados</span>
+    </div>
+    <table class="ops-table compact-table">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Documento</th>
+          <th>E-mail</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= for (customer) in customers { %>
+          <tr>
+            <td><%= customer.Name %></td>
+            <td><%= customer.Document %></td>
+            <td><%= customer.Email %></td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table-panel stacked-panel">
+    <div class="panel-title">
+      <h2>Contas</h2>
+      <span>Saldo consultavel pela API GET /accounts/{id}/balance</span>
+    </div>
+    <table class="ops-table compact-table">
+      <thead>
+        <tr>
+          <th>Agencia</th>
+          <th>Conta</th>
+          <th>Saldo</th>
+          <th>Status</th>
+          <th>Consulta</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= for (account) in accounts { %>
+          <tr>
+            <td><%= account.Agency %></td>
+            <td><%= account.Number %></td>
+            <td>R$ <%= centsToBRL(account.BalanceCents) %></td>
+            <td><span class="status-pill status-account-<%= account.Status %>"><%= accountStatusLabel(account.Status) %></span></td>
+            <td><a href="/accounts/<%= account.ID %>/balance">Ver saldo</a></td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
 </section>
